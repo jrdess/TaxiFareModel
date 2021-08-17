@@ -6,6 +6,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import LinearRegression
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 class Trainer():
     def __init__(self, X, y):
@@ -54,16 +56,20 @@ if __name__ == "__main__":
     df = get_data()
     df = clean_data(df)
     print(df)
+    df_train, df_val = train_test_split(df, test_size=0.2)
     #set X and y
-    y = df.pop("fare_amount")
-    X = df    
+    y_train = df_train.pop("fare_amount")
+    X_train = df_train
+
+    y_val = df_val.pop("fare_amount")
+    X_val = df_val
 
     #holdout
-    trainer = Trainer(X,y)
+    trainer = Trainer(X_train, y_train)
     
     # train
     trainer.get_pipeline().run()
 
     # evaluate
-    print(trainer.evaluate(X,y))
+    trainer.evaluate(X_val,y_val)
     
